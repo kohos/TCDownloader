@@ -7,7 +7,17 @@ const WebSocket = require('ws');
 (async function() {
   if (process.argv.length < 3) return;
   const userId = process.argv[2];
-  const password = (process.argv.length < 4) ? null : process.argv[3];
+  let password = null;
+  let seconds = null;
+  let last = null;
+  let debug = false;
+  for (let i = 3; i < process.argv.length; i++) {
+    const argv = process.argv[i];
+    if (last === '-p') password = argv;
+    if (last === '-i') seconds = argv;
+    if (argv.startsWith('-')) last = argv;
+    if (argv === '-d') debug = true;
+  }
   let id = null;
   let interval = 4000;
   let func = null;
@@ -29,9 +39,9 @@ const WebSocket = require('ws');
         download(streamUrl, userId, path.join(__dirname, `${userId}_${id}_${Date.now()}.ts`));
       }
     } else {
-      // console.log(`${now()} OFFLINE ${userId}`);
+      if (debug) console.debug(`${now()} ${userId} OFFLINE`);
     }
-    interval = data.interval * 1000;
+    interval = (seconds == null ? data.interval : parseInt(seconds, 10)) * 1000;
     setTimeout(func, interval);
   };
   setTimeout(func, interval);
