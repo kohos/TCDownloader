@@ -19,7 +19,7 @@ cd TCDownloader
 Start monitor and download. tcid is required, password is optional.
 
 ``
-node app.js <tcid> [password]
+node app.js <tcid> [-p <password>]
 ``
 
 Download filename is <tcid>_<liveid>_<time>.ts
